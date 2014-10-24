@@ -174,7 +174,9 @@ Frequently Asked Questions
 --------------------------
 
 **Q**: Why REST/JSON? Why no *insert favorite technology here*?
+
 **A**: Today approximately 2/3 of new applications implement REST/JSON API. Parsing JSON is technically must simpler and less error prone than, say, XML. That is not to say the alternatives do not have their uses.
 
 **Q**: Why the settings are hard coded?
+
 **A**: Simplicity. Bolting down the configuration in order to protect them against changes.
