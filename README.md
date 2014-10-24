@@ -4,14 +4,11 @@ Morganfield
 Introduction
 ------------
 
-Morganfield is a simple REST/JSON Information Exchange Gateway. I works by mimicking target services, proxying requests to them, and by forcing JSON message structure via means of marshaling & unmarshaling the messages against structure definitions. 
+Morganfield is a simple REST/JSON Information Exchange Gateway. It works by mimicking target services, proxying requests to them, and by forcing JSON message structure via means of marshaling & unmarshaling the messages against structure definitions. 
 
 ![Working principle](morganfield.png "Working principle")
 
 The application has minimal amount of moving parts, following the KISS principle. In ideal case the applications never notice that there is an extra component between them.
-
-
-PIC
 
 Installation
 ------------
@@ -149,14 +146,14 @@ Logging
 
 Logging is done to syslog facility DAEMON. Request log messages are valid JSON.
 
-Forwarding logging to something like [ELK](http://www.elasticsearch.org/overview/) is highly recommended. Please note that your syslog implementation has to support large (>1k) packets.
+Forwarding logs to something like [ELK](http://www.elasticsearch.org/overview/) is highly recommended. Please note that your syslog implementation has to support large (>1k) packets.
 
 Performance
 -----------
 
 In short, morganfield can be easily scaled up to thousands of requests per second. Most usually the bottleneck will be the target services. 
 
-In quick testing against simple GET service (Jira's login information), and POST service (login to Jira) results looked like the following:
+In quick testing against simple GET service (Jira login information), and POST service (login to Jira) results looked like the following:
 
 * Intel(R) Core(TM) i5-4570T CPU @ 2.90GHz 
 * Fedora 20 (64-bit)
@@ -176,8 +173,10 @@ Created by Mikko Lehtisalo <mikko.lehtisalo@gmail.com>.
 Frequently Asked Questions
 --------------------------
 
-Q: Why REST/JSON? Why no <insert favorite technology here>?
-A: Today approximately 2/3 of new applications implement REST/JSON API. Parsing JSON is technically must simpler and less error prone than, say, XML. That is not to say the alternatives do not have their uses.
+**Q**: Why REST/JSON? Why no <insert favorite technology here>?
 
-Q: Why most of the settings are hard coded?
-A: Simplicity. Bolting down the configuration in order to protect them against changes. 
+**A**: Today approximately 2/3 of new applications implement REST/JSON API. Parsing JSON is technically must simpler and less error prone than, say, XML. That is not to say the alternatives do not have their uses.
+
+**Q**: Why the settings are hard coded?
+
+**A**: Simplicity. Bolting down the configuration in order to protect them against changes.
