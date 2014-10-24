@@ -1,0 +1,11 @@
+[Unit]
+Description=Morganfield
+
+[Service]
+ExecStart=/opt/morganfield/bin/morganfield
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -SIGKILL $MAINPID
+Restart=always
+
+[Install]
+WantedBy=multi-user.target 

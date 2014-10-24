@@ -1,0 +1,81 @@
+policy_module(morganfield, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+
+require {
+    type unconfined_t;
+    type fs_t;
+    class process { transition siginh noatsecure rlimitinh };
+    role unconfined_r;
+    class capability { dac_read_search dac_override };
+    class capability2 block_suspend;
+}
+
+attribute_role morganfield_roles;
+roleattribute system_r morganfield_roles;
+
+type morganfield_t;
+type morganfield_exec_t;
+application_domain(morganfield_t, morganfield_exec_t)
+role morganfield_roles types morganfield_t;
+
+########################################
+#
+# morganfield local policy
+#
+
+allow morganfield_t self:fifo_file manage_fifo_file_perms;
+allow morganfield_t self:unix_stream_socket create_stream_socket_perms;
+
+domain_use_interactive_fds(morganfield_t)
+
+files_read_etc_files(morganfield_t)
+
+logging_send_syslog_msg(morganfield_t)
+
+miscfiles_read_localization(morganfield_t)
+
+sysnet_dns_name_resolve(morganfield_t)
+
+# Relabeling
+allow unconfined_t morganfield_t:dir relabelto;
+allow morganfield_t fs_t:filesystem associate;
+allow unconfined_t morganfield_t:dir relabelfrom;
+allow unconfined_t morganfield_t:file relabelfrom;
+
+# Transition to exec_t
+role unconfined_r types morganfield_exec_t;
+allow unconfined_t morganfield_exec_t:file execute;
+type_transition unconfined_t morganfield_exec_t:process morganfield_exec_t;
+allow unconfined_t morganfield_exec_t:process { siginh rlimitinh noatsecure transition };
+allow morganfield_exec_t self:file entrypoint;
+
+# Process control
+unconfined_sigchld(morganfield_exec_t)
+
+# Common process requirements
+domain_base_type(morganfield_exec_t)
+files_list_root(morganfield_exec_t)
+unconfined_use_fds(morganfield_exec_t)
+userdom_use_inherited_user_ptys(morganfield_exec_t)
+auth_login_pgm_domain(morganfield_exec_t)
+kernel_read_unix_sysctls(morganfield_exec_t)
+virt_sandbox_domain(morganfield_exec_t)
+
+# Networking
+allow morganfield_exec_t self:unix_dgram_socket create;
+allow morganfield_exec_t self:tcp_socket { setopt read bind create accept write getattr getopt listen };
+corenet_tcp_bind_http_port(morganfield_exec_t)
+corenet_tcp_connect_http_port(morganfield_exec_t)
+
+# Allow unconfined users still manage files, when necessary
+allow unconfined_t morganfield_t:dir { search unlink read create write getattr rmdir remove_name open add_name };
+allow unconfined_t morganfield_t:file { unlink rename setattr read lock create write getattr open append };
+allow unconfined_t morganfield_exec_t:file { unlink rename setattr read lock create write getattr open append };
+
+# Basic capabilities
+allow morganfield_exec_t self:capability { dac_read_search dac_override };
+allow morganfield_exec_t self:capability2 block_suspend;

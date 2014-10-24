@@ -1,0 +1,2 @@
+/opt/morganfield(.*)                        gen_context(system_u:object_r:morganfield_t,s0)
+/opt/morganfield/bin/morganfield		--	gen_context(system_u:object_r:morganfield_exec_t,s0)

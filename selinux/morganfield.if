@@ -1,0 +1,76 @@
+
+## <summary>policy for morganfield</summary>
+
+########################################
+## <summary>
+##	Execute TEMPLATE in the morganfield domin.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`morganfield_domtrans',`
+	gen_require(`
+		type morganfield_t, morganfield_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, morganfield_exec_t, morganfield_t)
+')
+
+########################################
+## <summary>
+##	Execute morganfield in the morganfield domain, and
+##	allow the specified role the morganfield domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to transition
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	The role to be allowed the morganfield domain.
+##	</summary>
+## </param>
+#
+interface(`morganfield_run',`
+	gen_require(`
+		type morganfield_t;
+		attribute_role morganfield_roles;
+	')
+
+	morganfield_domtrans($1)
+	roleattribute $2 morganfield_roles;
+')
+
+########################################
+## <summary>
+##	Role access for morganfield
+## </summary>
+## <param name="role">
+##	<summary>
+##	Role allowed access
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	User domain for the role
+##	</summary>
+## </param>
+#
+interface(`morganfield_role',`
+	gen_require(`
+		type morganfield_t;
+		attribute_role morganfield_roles;
+	')
+
+	roleattribute $1 morganfield_roles;
+
+	morganfield_domtrans($2)
+
+	ps_process_pattern($2, morganfield_t)
+	allow $2 morganfield_t:process { signull signal sigkill };
+')
