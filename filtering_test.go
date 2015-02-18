@@ -7,6 +7,10 @@ type SimpleStruct struct {
 	Username string `json:"username"`
 }
 
+type SimpleBooleanStruct struct {
+	Testbool bool `json:"testboolean"`
+}
+
 type SimpleIntegerStruct struct {
 	Number1 int `json:"number1"`
 	Number2 int `json:"number2"`
@@ -15,6 +19,16 @@ type SimpleIntegerStruct struct {
 
 type SimpleFloatStruct struct {
 	Number1 float64 `json:"number1"`
+}
+
+// Go's JSON parser parses unquoted booleans
+func Test_bool_handling(t *testing.T) {
+	instr := "{\"testboolean\": true}"
+	inobj := SimpleBooleanStruct{}
+	_, err := UnMarshal(instr, &inobj)
+	if err != nil || inobj.Testbool == false {
+		t.Errorf("Test_bool_handling failed to parse boolean!")
+	}
 }
 
 // Go's JSON parser will not parse anything with missing brackets
