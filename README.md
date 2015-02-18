@@ -66,7 +66,7 @@ systemctl start morganfield
 systemctl enable morganfield
 ```
 
-The systemd service restarts automatically. You may want to edit */etc/systemd/system/morganfield.service* to include GOMAXPROCS environment value.
+The systemd service restarts automatically. Adding GOMAXPROCS should not be necessarily, the application attempts to set it automatically to runtime.NumCPU(). 
 
 SELinux
 -------

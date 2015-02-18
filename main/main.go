@@ -8,6 +8,9 @@ import (
 )
 
 func main() {
+	// Set gomaxprocs automatically
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	// Open syslog
 	syslog.Openlog("morganfield", syslog.LOG_PID, syslog.LOG_DAEMON)
 
