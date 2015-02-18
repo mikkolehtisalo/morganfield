@@ -1,7 +1,7 @@
 package morganfield
 
 import (
-	"github.com/blackjack/syslog"
+//"github.com/blackjack/syslog"
 )
 
 func Setup_services() {
