@@ -1,6 +1,7 @@
 package morganfield
 
 import (
+	"net"
 	"strings"
 )
 
@@ -35,11 +36,17 @@ func (s suffixlist) String() string {
 }
 
 func get_suffix_list(s Service_Definition) suffixlist {
-	// If there's a port, strip it off
-	intt_host := s.Internal_Host_Without_Port()
-	extt_host := s.External_Host_Without_Port()
+	inthost, _, err := net.SplitHostPort(s.Internal_Host)
+	if err != nil {
+		panic(err)
+	}
+	exthost, _, err := net.SplitHostPort(s.Internal_Host)
+	if err != nil {
+		panic(err)
+	}
+
 	return suffixlist{
-		Internal_Host: intt_host,
-		External_Host: extt_host,
+		Internal_Host: inthost,
+		External_Host: exthost,
 	}
 }

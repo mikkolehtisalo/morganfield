@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/blackjack/syslog"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/http/cookiejar"
 	"time"
@@ -46,12 +47,16 @@ func get_http_client(s Service_Definition) *http.Client {
 		panic(err)
 	}
 
+	host, _, err := net.SplitHostPort(s.External_Host)
+	if err != nil {
+		panic(err)
+	}
 	var client *http.Client
 	if s.External_Protocol == "https" {
 		client = &http.Client{
 			Timeout:   60 * time.Second,
 			Jar:       jar,
-			Transport: get_transport(s.External_Host_Without_Port()),
+			Transport: get_transport(host),
 		}
 	} else {
 		client = &http.Client{
@@ -137,12 +142,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	request.Header.Add("Content-Type", "application/json")
 
+	host, _, err := net.SplitHostPort(s.External_Host)
+	if err != nil {
+		panic(err)
+	}
+
 	// Add cookies
 	if s.SetCookies {
 		origc := r.Cookies()
 		for _, c := range origc {
 			// When outgoing, cookie domain must match External_Host
-			c.Domain = s.External_Host_Without_Port()
+			c.Domain = host
 			reqlog.InCookies = append(reqlog.InCookies, fmt.Sprintf("%v", c))
 			request.AddCookie(c)
 		}
@@ -171,13 +181,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		reqlog.OutJson = outjson
 	}
 
+	inthost, _, err := net.SplitHostPort(s.Internal_Host)
+	if err != nil {
+		panic(err)
+	}
+
 	// Cookies back
 	if s.SetCookies {
 		newc := response.Cookies()
 		for _, c := range newc {
 			// When incoming, cookie domain must match Internal_Host
 			if len(c.Domain) > 0 {
-				c.Domain = s.Internal_Host_Without_Port()
+				c.Domain = inthost
 			}
 			w.Header().Add("Set-Cookie", c.String())
 			reqlog.OutCookies = append(reqlog.OutCookies, fmt.Sprintf("%v", c))

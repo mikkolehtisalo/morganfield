@@ -3,7 +3,6 @@ package morganfield
 import (
 	"net/http"
 	"regexp"
-	"strings"
 )
 
 // Method: GET | PUT | POST | DELETE
@@ -38,14 +37,6 @@ func (s Service_Definition) Matches_Request(r *http.Request) bool {
 		host = r.URL.Host
 	}
 	return (r.Method == s.Method) && s.URI.MatchString(r.URL.Path) && (host == s.Internal_Host) && s.Caller.MatchString(r.RemoteAddr)
-}
-
-func (s Service_Definition) Internal_Host_Without_Port() string {
-	return strings.Join(strings.Split(s.Internal_Host, ":")[:1], "")
-}
-
-func (s Service_Definition) External_Host_Without_Port() string {
-	return strings.Join(strings.Split(s.External_Host, ":")[:1], "")
 }
 
 func Create_Service_Definition(
